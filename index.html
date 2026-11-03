@@ -24,12 +24,32 @@ input{display:none}
 #name{font-size:26px;font-weight:800;line-height:1.1;text-transform:capitalize}
 #num{font-size:20px;font-weight:600;margin-top:4px}
 #alt{font-size:14px;opacity:.7;margin-top:4px}
+#help{width:44px;height:44px;border-radius:50%;border:2px solid var(--acc);background:transparent;color:var(--acc);font-size:20px;font-weight:800}
+#intro{position:fixed;inset:0;z-index:50;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px));overflow:auto}
+#intro.off{display:none}
+#intro .box{max-width:420px;width:100%}
+#intro h2{font-size:26px;margin:0 0 14px}
+#intro ol{padding-left:22px;margin:0 0 20px;font-size:18px;line-height:1.45}
+#intro li{margin-bottom:10px}
+#intro .firma{font-size:15px;line-height:1.5;opacity:.75;margin-bottom:22px}
+#intro button{width:100%;background:var(--acc);color:var(--accfg);font-size:18px;font-weight:700;border:0;border-radius:12px;padding:15px}
 </style>
 </head>
 <body>
+<div id="intro"><div class="box">
+  <h2>¿Qué rotulador uso?</h2>
+  <ol>
+    <li>Pulsa «Abrir foto» y elige una imagen de tu galería.</li>
+    <li>Pellizca con dos dedos para hacer zoom y arrastra con un dedo para moverte por la foto.</li>
+    <li>Toca un punto con un solo dedo: la app te dice el color con palabras y el número del rotulador que más se parece.</li>
+    <li>Para un buen resultado, usa fotos con luz natural y sin sombras fuertes.</li>
+  </ol>
+  <div class="firma">David Perez<br>3 de noviembre de 2026<br>V1.0</div>
+  <button id="introOk">Empezar</button>
+</div></div>
 <header>
   <h1>¿Qué rotulador uso?</h1>
-  <label class="btn">Abrir foto<input id="file" type="file" accept="image/*"></label>
+  <div style="display:flex;gap:10px;align-items:center"><button id="help" aria-label="Ayuda">?</button><label class="btn">Abrir foto<input id="file" type="file" accept="image/*"></label></div>
 </header>
 <div id="stage">
   <div id="hint">Abre una foto de tu figura.<br>Toca un punto para ver su color. Pellizca para hacer zoom.</div>
@@ -172,6 +192,10 @@ stage.addEventListener('touchend',e=>{
     if(s<minS)fit();
   }else if(t.length===1){sx=t[0].clientX;sy=t[0].clientY;ox=tx;oy=ty;moved=true}
 },{passive:false});
+// Explicación inicial
+const intro=document.getElementById('intro');
+document.getElementById('introOk').addEventListener('click',()=>intro.classList.add('off'));
+document.getElementById('help').addEventListener('click',()=>intro.classList.remove('off'));
 // Ratón (por si lo abres en ordenador)
 stage.addEventListener('click',e=>tap(e.clientX,e.clientY));
 stage.addEventListener('wheel',e=>{
