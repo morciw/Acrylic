@@ -31,7 +31,7 @@ input{display:none}
 #intro h2{font-size:26px;margin:0 0 14px}
 #intro ol{padding-left:22px;margin:0 0 20px;font-size:18px;line-height:1.45}
 #intro li{margin-bottom:10px}
-#intro .firma{font-size:15px;line-height:1.5;opacity:.75;margin-bottom:22px}
+#intro .firma{font-size:15px;line-height:1.5;opacity:.75;margin-bottom:22px;text-align:right}
 #intro button{width:100%;background:var(--acc);color:var(--accfg);font-size:18px;font-weight:700;border:0;border-radius:12px;padding:15px}
 </style>
 </head>
@@ -44,7 +44,7 @@ input{display:none}
     <li>Toca un punto con un solo dedo: la app te dice el color con palabras y el número del rotulador que más se parece.</li>
     <li>Para un buen resultado, usa fotos con luz natural y sin sombras fuertes.</li>
   </ol>
-  <div class="firma">David Perez<br>3 de noviembre de 2026<br>V1.0</div>
+  <div class="firma">David Perez<br>10.11.26<br>V1.1</div>
   <button id="introOk">Empezar</button>
 </div></div>
 <header>
@@ -76,7 +76,11 @@ function rgb2lab([r,g,b]){
 // Balance de blancos: el 300 es blanco, así que se corrige todo el set tomando su tapa como referencia.
 const BLANCO=hex2rgb(MARKERS[300]);
 const corr=h=>hex2rgb(h).map((v,i)=>Math.min(255,Math.round(v*255/BLANCO[i])));
-const LIST=Object.entries(MARKERS).map(([n,h])=>{const c=corr(h);return {n,hex:'rgb('+c+')',lab:rgb2lab(c)}});
+// Segunda importación (carta de colores): llevan una N delante del número. Los números que ya existen arriba no se duplican.
+// Colores medidos de la foto con el blanco (300) como referencia.
+const NUEVOS={348:'#ADB031',346:'#E5B29A',383:'#E9A35E',325:'#DA7667',330:'#965255',367:'#BB433F',335:'#AC6390',329:'#926795',381:'#807BA8',369:'#879348',345:'#C0845B',384:'#D57557',370:'#8360A5',368:'#676A57',365:'#7C6F64',364:'#904A44',386:'#5F575A',337:'#A08984',343:'#6F686A',363:'#A8574E',372:'#4D4445',376:'#716F75',371:'#464146',373:'#383A3E',385:'#899649',382:'#67684D',338:'#AA9275',344:'#DB9685',339:'#D7A097',374:'#CE8786',366:'#C56A7A',375:'#8A6965',378:'#695158',333:'#7C6E6C',379:'#464044',380:'#2E373C'};
+const LIST=Object.entries(MARKERS).map(([n,h])=>{const c=corr(h);return {n,hex:'rgb('+c+')',lab:rgb2lab(c)}})
+  .concat(Object.entries(NUEVOS).filter(([n])=>!(n in MARKERS)).map(([n,h])=>({n:'N'+n,hex:h,lab:rgb2lab(hex2rgb(h))})));
 
 function nombre(r,g,b){
   r/=255;g/=255;b/=255;
