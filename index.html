@@ -10,8 +10,8 @@
 :root[data-theme="dark"]{--bg:#0e1013;--fg:#f0f2f4;--card:#1a1d21;--line:#2f343a;--acc:#7aa2ff;--accfg:#0e1013;color-scheme:dark}
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--fg);font-family:-apple-system,"Helvetica Neue",system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;-webkit-user-select:none;user-select:none}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px}
-h1{font-size:17px;margin:0;font-weight:700}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;padding:10px 14px}
+h1{font-size:16px;margin:0;font-weight:700}
 label.btn{background:var(--acc);color:var(--accfg);font-weight:700;font-size:16px;padding:12px 18px;border-radius:12px;cursor:pointer}
 input{display:none}
 #stage{flex:1;position:relative;overflow:hidden;touch-action:none;background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -33,6 +33,25 @@ input{display:none}
 #intro li{margin-bottom:10px}
 #intro .firma{font-size:15px;line-height:1.5;opacity:.75;margin-bottom:22px;text-align:right}
 #intro button{width:100%;background:var(--acc);color:var(--accfg);font-size:18px;font-weight:700;border:0;border-radius:12px;padding:15px}
+#palBtn{height:44px;padding:0 16px;border-radius:22px;border:2px solid var(--acc);background:transparent;color:var(--acc);font-size:16px;font-weight:700}
+#pal{position:fixed;inset:0;z-index:40;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+#pal.off{display:none}
+#pal .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px}
+#pal h2{margin:0;font-size:22px}
+#pal #palClose{background:var(--acc);color:var(--accfg);font-size:16px;font-weight:700;border:0;border-radius:12px;padding:12px 18px}
+#palGrid{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;align-content:start;padding:0 14px calc(20px + env(safe-area-inset-bottom,0px))}
+.it{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px}
+.it .c{width:44px;height:44px;border-radius:8px;border:1px solid var(--line);flex:none}
+.it span{font-size:17px;font-weight:700}
+label.btn{display:flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border-radius:22px}
+#palBtn{padding:0 14px}
+.pt{grid-column:1/-1;margin:0;font-size:15px;line-height:1.45}
+.pt.fin{margin-top:10px}
+.pt a{color:var(--acc);font-weight:700}
+.flags{display:flex;gap:12px;justify-content:center;margin-top:18px}
+#intro .flags button{width:auto;padding:4px;background:transparent;border:3px solid var(--line);border-radius:12px;line-height:0}
+#intro .flags button.on{border-color:var(--acc)}
+.flags svg{display:block;width:54px;height:36px;border-radius:6px}
 </style>
 </head>
 <body>
@@ -46,10 +65,19 @@ input{display:none}
   </ol>
   <div class="firma">David Perez<br>10.11.26<br>V1.1</div>
   <button id="introOk">Empezar</button>
+  <div class="flags">
+    <button data-l="ca" aria-label="Català"><svg viewBox="0 0 27 18" preserveAspectRatio="none"><rect width="27" height="18" fill="#FCDD09"/><g fill="#DA121A"><rect y="2" width="27" height="2"/><rect y="6" width="27" height="2"/><rect y="10" width="27" height="2"/><rect y="14" width="27" height="2"/></g></svg></button>
+    <button data-l="es" aria-label="Español"><svg viewBox="0 0 12 8" preserveAspectRatio="none"><rect width="12" height="8" fill="#AA151B"/><rect y="2" width="12" height="4" fill="#F1BF00"/></svg></button>
+    <button data-l="en" aria-label="English"><svg viewBox="0 0 60 40" preserveAspectRatio="none"><rect width="60" height="40" fill="#012169"/><path d="M0 0L60 40M60 0L0 40" stroke="#fff" stroke-width="7"/><path d="M0 0L60 40M60 0L0 40" stroke="#C8102E" stroke-width="2.5"/><path d="M30 0V40M0 20H60" stroke="#fff" stroke-width="12"/><path d="M30 0V40M0 20H60" stroke="#C8102E" stroke-width="7"/></svg></button>
+  </div>
 </div></div>
+<div id="pal" class="off">
+  <div class="top"><h2 id="palTitle">Paleta</h2><button id="palClose">Cerrar</button></div>
+  <div id="palGrid"></div>
+</div>
 <header>
   <h1>¿Qué rotulador uso?</h1>
-  <div style="display:flex;gap:10px;align-items:center"><button id="help" aria-label="Ayuda">?</button><label class="btn">Abrir foto<input id="file" type="file" accept="image/*"></label></div>
+  <div style="display:flex;gap:8px;align-items:center;margin-left:auto"><button id="help" aria-label="Ayuda">?</button><button id="palBtn">Paleta</button><label class="btn" aria-label="Abrir foto" title="Abrir foto"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><input id="file" type="file" accept="image/*"></label></div>
 </header>
 <div id="stage">
   <div id="hint">Abre una foto de tu figura.<br>Toca un punto para ver su color. Pellizca para hacer zoom.</div>
@@ -129,12 +157,12 @@ document.getElementById('file').addEventListener('change',e=>{
     URL.revokeObjectURL(url);
     loaded=true;ring.style.display='none';
     document.getElementById('hint').style.display='none';
-    document.getElementById('name').textContent='Toca un punto';
+    ultimo=null;document.getElementById('name').textContent=T('toca');
     ['num','alt'].forEach(i=>document.getElementById(i).textContent='');
     ['sw1','sw2'].forEach(i=>document.getElementById(i).style.background='transparent');
     fit();
   };
-  img.onerror=()=>{document.getElementById('name').textContent='No se pudo abrir la foto'};
+  img.onerror=()=>{document.getElementById('name').textContent=T('error')};
   img.src=url;
 });
 window.addEventListener('resize',()=>{if(loaded)fit()});
@@ -151,14 +179,19 @@ function tap(cx,cy){
   let R=0,G=0,B=0,c=0;
   for(let i=0;i<d.length;i+=4){R+=d[i];G+=d[i+1];B+=d[i+2];c++}
   R=Math.round(R/c);G=Math.round(G/c);B=Math.round(B/c);
+  ring.style.display='block';ring.style.left=x+'px';ring.style.top=y+'px';
+  ultimo=[R,G,B];mostrar();
+}
+function mostrar(){
+  if(!ultimo)return;
+  const [R,G,B]=ultimo;
   const lab=rgb2lab([R,G,B]);
   const rank=LIST.map(m=>({m,d:Math.hypot(lab[0]-m.lab[0],lab[1]-m.lab[1],lab[2]-m.lab[2])})).sort((a,b)=>a.d-b.d);
-  ring.style.display='block';ring.style.left=x+'px';ring.style.top=y+'px';
   document.getElementById('sw1').style.background='rgb('+R+','+G+','+B+')';
   document.getElementById('sw2').style.background=rank[0].m.hex;
-  document.getElementById('name').textContent=nombre(R,G,B);
-  document.getElementById('num').textContent='Rotulador '+rank[0].m.n;
-  document.getElementById('alt').textContent='Otras opciones: '+rank[1].m.n+', '+rank[2].m.n;
+  document.getElementById('name').textContent=nombreI(R,G,B);
+  document.getElementById('num').textContent=T('rot')+' '+rank[0].m.n;
+  document.getElementById('alt').textContent=T('otras')+' '+rank[1].m.n+', '+rank[2].m.n;
 }
 
 // Gestos: 1 dedo = tocar (o arrastrar), 2 dedos = zoom y mover
@@ -196,6 +229,73 @@ stage.addEventListener('touchend',e=>{
     if(s<minS)fit();
   }else if(t.length===1){sx=t[0].clientX;sy=t[0].clientY;ox=tx;oy=ty;moved=true}
 },{passive:false});
+// Paleta
+const pal=document.getElementById('pal');
+document.getElementById('palBtn').addEventListener('click',()=>{
+  const g=document.getElementById('palGrid');
+  g.innerHTML='';
+  const nota=(h,c)=>{const p=document.createElement('p');p.className='pt'+(c?' '+c:'');p.innerHTML=h;return p};
+  g.append(nota(T('palTexto')));
+  LIST.forEach(m=>{
+    const d=document.createElement('div');d.className='it';
+    const c=document.createElement('div');c.className='c';c.style.background=m.hex;
+    const t=document.createElement('span');t.textContent=m.n;
+    d.append(c,t);g.append(d);
+  });
+  g.append(nota(T('palFin'),'fin'));
+  document.getElementById('palTitle').textContent=T('paleta')+' ('+LIST.length+')';
+  g.scrollTop=0;
+  pal.classList.remove('off');
+});
+document.getElementById('palClose').addEventListener('click',()=>pal.classList.add('off'));
+// Idiomas
+let ultimo=null,lang='es';
+const MAIL='<a href="mailto:fjrmorciw@gmail.com">fjrmorciw@gmail.com</a>';
+const I18N={
+ es:{titulo:`¿Qué rotulador uso?`,items:[`Pulsa el icono de la cámara y elige una imagen de tu galería.`,`Pellizca con dos dedos para hacer zoom y arrastra con un dedo para moverte por la foto.`,`Toca un punto con un solo dedo: la app te dice el color con palabras y el número del rotulador que más se parece.`,`Para un buen resultado, usa fotos con luz natural y sin sombras fuertes.`],empezar:`Empezar`,hint:`Abre una foto de tu figura.<br>Toca un punto para ver su color. Pellizca para hacer zoom.`,paleta:`Paleta`,cerrar:`Cerrar`,ayuda:`Ayuda`,foto:`Abrir foto`,toca:`Toca un punto`,rot:`Rotulador`,otras:`Otras opciones:`,error:`No se pudo abrir la foto`,
+  palTexto:`Estos son los colores que tiene dados de alta la app. Los números sin letra (300 a 358) son los del primer set de rotuladores. Los que empiezan por N (por ejemplo N330) son los de la segunda importación, tomados de la carta de colores. Al tocar un punto de una foto, la app te indica el rotulador cuyo color más se parece. Los colores mostrados aquí son aproximados, porque se han sacado de fotos.`,
+  palFin:`Para añadir nuevos colores, contacta por email con ${MAIL}.`},
+ ca:{titulo:`Quin retolador faig servir?`,items:[`Prem la icona de la càmera i tria una imatge de la teva galeria.`,`Pessiga amb dos dits per fer zoom i arrossega amb un dit per moure't per la foto.`,`Toca un punt amb un sol dit: l'app et diu el color amb paraules i el número del retolador que més s'hi assembla.`,`Per a un bon resultat, fes servir fotos amb llum natural i sense ombres fortes.`],empezar:`Començar`,hint:`Obre una foto de la teva figura.<br>Toca un punt per veure'n el color. Pessiga per fer zoom.`,paleta:`Paleta`,cerrar:`Tanca`,ayuda:`Ajuda`,foto:`Obrir foto`,toca:`Toca un punt`,rot:`Retolador`,otras:`Altres opcions:`,error:`No s'ha pogut obrir la foto`,
+  palTexto:`Aquests són els colors que té donats d'alta l'app. Els números sense lletra (300 a 358) són els del primer set de retoladors. Els que comencen per N (per exemple N330) són els de la segona importació, presos de la carta de colors. Quan toques un punt d'una foto, l'app t'indica el retolador amb el color més semblant. Els colors mostrats aquí són aproximats, perquè s'han tret de fotos.`,
+  palFin:`Per afegir nous colors, contacta per correu electrònic amb ${MAIL}.`},
+ en:{titulo:`Which marker should I use?`,items:[`Tap the camera icon and choose an image from your photo library.`,`Pinch with two fingers to zoom and drag with one finger to move around the photo.`,`Tap a spot with one finger: the app tells you the color in words and the number of the closest marker.`,`For a good result, use photos taken in natural light and without strong shadows.`],empezar:`Start`,hint:`Open a photo of your figure.<br>Tap a spot to see its color. Pinch to zoom.`,paleta:`Palette`,cerrar:`Close`,ayuda:`Help`,foto:`Open photo`,toca:`Tap a spot`,rot:`Marker`,otras:`Other options:`,error:`Could not open the photo`,
+  palTexto:`These are the colors registered in the app. Numbers without a letter (300 to 358) are from the first set of markers. Those starting with N (for example N330) are from the second import, taken from the color chart. When you tap a spot in a photo, the app tells you the marker with the most similar color. The colors shown here are approximate, because they were taken from photos.`,
+  palFin:`To add new colors, contact by email at ${MAIL}.`}
+};
+const COL={ca:{negro:'negre',blanco:'blanc',gris:'gris',rosa:'rosa',rojo:'vermell','marrón':'marró','melocotón':'prèssec',naranja:'taronja','verde oliva':'verd oliva',amarillo:'groc',verde:'verd',turquesa:'turquesa',celeste:'blau cel',azul:'blau',lila:'lila',violeta:'violeta',morado:'morat',fucsia:'fúcsia'},en:{negro:'black',blanco:'white',gris:'gray',rosa:'pink',rojo:'red','marrón':'brown','melocotón':'peach',naranja:'orange','verde oliva':'olive green',amarillo:'yellow',verde:'green',turquesa:'turquoise',celeste:'sky blue',azul:'blue',lila:'lilac',violeta:'violet',morado:'purple',fucsia:'fuchsia'}};
+const T=k=>I18N[lang][k];
+function nombreI(R,G,B){
+  let n=nombre(R,G,B);
+  if(lang==='es')return n;
+  let mod='';
+  if(n.endsWith(' claro')){mod='c';n=n.slice(0,-6)}else if(n.endsWith(' oscuro')){mod='o';n=n.slice(0,-7)}
+  const b=COL[lang][n]||n;
+  if(!mod)return b;
+  if(lang==='ca')return b+(mod==='c'?' clar':' fosc');
+  return (mod==='c'?'light ':'dark ')+b;
+}
+function setLang(l){
+  lang=l;
+  try{localStorage.setItem('lang_v1',l)}catch(e){}
+  const t=I18N[l];
+  document.documentElement.lang=l;
+  document.title=t.titulo;
+  document.querySelector('h1').textContent=t.titulo;
+  document.querySelector('#intro h2').textContent=t.titulo;
+  document.querySelectorAll('#intro li').forEach((li,i)=>{li.textContent=t.items[i]});
+  document.getElementById('introOk').textContent=t.empezar;
+  document.getElementById('hint').innerHTML=t.hint;
+  document.getElementById('palBtn').textContent=t.paleta;
+  document.getElementById('palClose').textContent=t.cerrar;
+  document.getElementById('help').setAttribute('aria-label',t.ayuda);
+  const lb=document.querySelector('label.btn');lb.setAttribute('aria-label',t.foto);lb.title=t.foto;
+  document.querySelectorAll('.flags button').forEach(b=>b.classList.toggle('on',b.dataset.l===l));
+  if(ultimo)mostrar();else if(loaded)document.getElementById('name').textContent=t.toca;
+}
+document.querySelectorAll('.flags button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.l)));
+try{const g=localStorage.getItem('lang_v1');if(g&&I18N[g])lang=g}catch(e){}
+setLang(lang);
+
 // Explicación inicial
 const intro=document.getElementById('intro');
 document.getElementById('introOk').addEventListener('click',()=>intro.classList.add('off'));
